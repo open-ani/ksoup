@@ -3,10 +3,11 @@ package com.fleeksoft.ksoup.ported
 import de.cketti.codepoints.appendCodePoint
 import io.ktor.http.*
 import io.ktor.utils.io.charsets.*
-import okio.Buffer
+import kotlinx.io.Buffer
+import kotlinx.io.writeString
 
 internal fun String.isCharsetSupported(): Boolean {
-    val result = runCatching { Charset.forName(this) }.getOrNull()
+    val result = runCatching { Charsets.forName(this) }.getOrNull()
     return result != null
 }
 
@@ -127,22 +128,11 @@ internal fun CharsetEncoder.canEncode(s: String): Boolean {
 
 internal fun String.isValidResourceUrl() =
     this.startsWith("http", ignoreCase = true) || this.startsWith("ftp://", ignoreCase = true) ||
-        this.startsWith("ftps://", ignoreCase = true) ||
-        this.startsWith("file:/", ignoreCase = true) ||
-        this.startsWith("//")
+            this.startsWith("ftps://", ignoreCase = true) ||
+            this.startsWith("file:/", ignoreCase = true) ||
+            this.startsWith("//")
 
-internal fun String.isAbsResource() =
-    this.startsWith("mailto:", ignoreCase = true) || this.startsWith("tel:", ignoreCase = true) ||
-        this.startsWith("geo:", ignoreCase = true) ||
-        this.startsWith("about:", ignoreCase = true) ||
-        this.startsWith("sms:", ignoreCase = true) ||
-        this.startsWith("smsto:", ignoreCase = true) ||
-        this.startsWith("data:", ignoreCase = true) ||
-        this.startsWith("market:", ignoreCase = true) ||
-        this.startsWith("magnet:", ignoreCase = true) ||
-        this.startsWith("sip:", ignoreCase = true) ||
-        this.startsWith("sips:", ignoreCase = true) ||
-        this.startsWith("javascript:", ignoreCase = true)
+internal fun String.isAbsResource(): Boolean = Regex("\\w+:").containsMatchIn(this)
 
 internal fun IntArray.codePointsToString(): String {
     return if (this.isNotEmpty()) {
@@ -157,5 +147,5 @@ internal fun IntArray.codePointsToString(): String {
 }
 
 internal fun String.toBuffer(): Buffer {
-    return Buffer().apply { writeUtf8(this@toBuffer) }
+    return Buffer().apply { writeString(this@toBuffer) }
 }

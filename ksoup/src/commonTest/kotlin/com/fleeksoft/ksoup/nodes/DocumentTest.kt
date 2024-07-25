@@ -1,15 +1,11 @@
 package com.fleeksoft.ksoup.nodes
 
-import com.fleeksoft.ksoup.Ksoup
-import com.fleeksoft.ksoup.Platform
-import com.fleeksoft.ksoup.PlatformType
-import com.fleeksoft.ksoup.TestHelper
+import com.fleeksoft.ksoup.*
 import com.fleeksoft.ksoup.parser.ParseSettings
 import com.fleeksoft.ksoup.parser.Parser
 import com.fleeksoft.ksoup.ported.BufferReader
 import io.ktor.utils.io.charsets.*
 import io.ktor.utils.io.core.*
-import okio.IOException
 import kotlin.test.*
 
 /**
@@ -147,7 +143,6 @@ class DocumentTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun testLocation() {
         // tests location vs base href
         val `in`: String = TestHelper.getResourceAbsolutePath("htmltests/basehref.html")
@@ -222,7 +217,7 @@ class DocumentTest {
 
     @Test
     fun testOverflowClone() {
-        if (Platform.current == PlatformType.JS) {
+        if (Platform.isJS()) {
             // FIXME: timeout error for js
             return
         }
@@ -265,7 +260,7 @@ class DocumentTest {
     fun testMetaCharsetUpdateUtf8() {
         val doc = createHtmlDocument("changeThis")
         doc.updateMetaCharsetElement(true)
-        doc.charset(Charset.forName(charsetUtf8))
+        doc.charset(Charsets.forName(charsetUtf8))
         val htmlCharsetUTF8 = """<html>
  <head>
   <meta charset="$charsetUtf8">
@@ -283,7 +278,7 @@ class DocumentTest {
     fun testMetaCharsetUpdateIso8859() {
         val doc = createHtmlDocument("changeThis")
         doc.updateMetaCharsetElement(true)
-        doc.charset(Charset.forName(charsetIso8859))
+        doc.charset(Charsets.forName(charsetIso8859))
         val htmlCharsetISO = """<html>
  <head>
   <meta charset="$charsetIso8859">
@@ -301,7 +296,7 @@ class DocumentTest {
     fun testMetaCharsetUpdateNoCharset() {
         val docNoCharset = Document.createShell("")
         docNoCharset.updateMetaCharsetElement(true)
-        docNoCharset.charset(Charset.forName(charsetUtf8))
+        docNoCharset.charset(Charsets.forName(charsetUtf8))
         assertEquals(
             charsetUtf8,
             docNoCharset.select("meta[charset]").first()!!
@@ -349,7 +344,7 @@ class DocumentTest {
     @Test
     fun testMetaCharsetUpdateEnabledAfterCharsetChange() {
         val doc = createHtmlDocument("dontTouch")
-        doc.charset(Charset.forName(charsetUtf8))
+        doc.charset(Charsets.forName(charsetUtf8))
         val selectedElement = doc.select("meta[charset]").first()
         assertEquals(charsetUtf8, selectedElement!!.attr("charset"))
         assertTrue(doc.select("meta[name=charset]").isEmpty())
@@ -359,7 +354,7 @@ class DocumentTest {
     fun testMetaCharsetUpdateCleanup() {
         val doc = createHtmlDocument("dontTouch")
         doc.updateMetaCharsetElement(true)
-        doc.charset(Charset.forName(charsetUtf8))
+        doc.charset(Charsets.forName(charsetUtf8))
         val htmlCharsetUTF8 = """<html>
  <head>
   <meta charset="$charsetUtf8">
@@ -373,7 +368,7 @@ class DocumentTest {
     fun testMetaCharsetUpdateXmlUtf8() {
         val doc = createXmlDocument("1.0", "changeThis", true)
         doc.updateMetaCharsetElement(true)
-        doc.charset(Charset.forName(charsetUtf8))
+        doc.charset(Charsets.forName(charsetUtf8))
         val xmlCharsetUTF8 = """<?xml version="1.0" encoding="$charsetUtf8"?>
 <root>
  node
@@ -389,7 +384,7 @@ class DocumentTest {
     fun testMetaCharsetUpdateXmlIso8859() {
         val doc = createXmlDocument("1.0", "changeThis", true)
         doc.updateMetaCharsetElement(true)
-        doc.charset(Charset.forName(charsetIso8859))
+        doc.charset(Charsets.forName(charsetIso8859))
         val xmlCharsetISO = """<?xml version="1.0" encoding="$charsetIso8859"?>
 <root>
  node
@@ -405,7 +400,7 @@ class DocumentTest {
     fun testMetaCharsetUpdateXmlNoCharset() {
         val doc = createXmlDocument("1.0", "none", false)
         doc.updateMetaCharsetElement(true)
-        doc.charset(Charset.forName(charsetUtf8))
+        doc.charset(Charsets.forName(charsetUtf8))
         val xmlCharsetUTF8 = """<?xml version="1.0" encoding="$charsetUtf8"?>
 <root>
  node

@@ -30,7 +30,7 @@ kotlin {
     androidTarget {
         compilations.all {
             kotlinOptions {
-                jvmTarget = "17"
+                jvmTarget = "11"
             }
         }
     }
@@ -61,13 +61,13 @@ kotlin {
             implementation(libs.ktor.client.core)
             implementation(libs.kotlinx.datetime)
             implementation(libs.codepoints)
-            api(libs.okio)
+            api(libs.kotlinx.io)
         }
         commonTest {
             this.kotlin.srcDir(layout.buildDirectory.file(rootPath))
             dependencies {
                 implementation(libs.kotlin.test)
-                implementation(projects.ksoupNetwork)
+                implementation(libs.kotlinx.coroutines.test)
             }
         }
 
@@ -84,7 +84,6 @@ kotlin {
         }
 
         jsMain.dependencies {
-            implementation(libs.okio.nodefilesystem)
         }
 
         val jvmAndroidCommonMain by creating {
@@ -117,8 +116,8 @@ android {
         minSdk = libs.versions.minSdk.get().toInt()
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 }
 

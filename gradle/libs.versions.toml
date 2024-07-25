@@ -1,21 +1,21 @@
 [versions]
-agp = "8.2.0"
-kotlin = "1.9.22"
+agp = "8.2.2" #kmp max gradle support 8.2 right now
+kotlin = "2.0.0"
 compileSdk = "34"
 minSdk = "21"
 libraryVersion = "0.1.2"
-ktor = "2.3.7"
-coroutines = "1.7.3"
-okio = "3.7.0"
-kotlinxDatetime = "0.5.0"
-kotlinx-io = "0.3.0"
-codepoints = "0.6.1"
-dokka = "1.9.10"
+ktor = "3.0.0-beta-2"
+coroutines = "1.8.1"
+kotlinx-io = "0.5.1"
+kotlinxDatetime = "0.6.0"
+codepoints = "0.9.0"
+dokka = "1.9.20"
 
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
@@ -23,10 +23,8 @@ ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
 ktor-client-win = { module = "io.ktor:ktor-client-winhttp", version.ref = "ktor" }
-okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
-okio-nodefilesystem = { module = "com.squareup.okio:okio-nodefilesystem", version.ref = "okio" }
-kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-io = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinx-io" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 codepoints = { module = "de.cketti.unicode:kotlin-codepoints-deluxe", version.ref = "codepoints" }
 
 [plugins]

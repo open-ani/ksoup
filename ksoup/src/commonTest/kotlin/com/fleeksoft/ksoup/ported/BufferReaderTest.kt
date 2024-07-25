@@ -1,17 +1,27 @@
+@file:OptIn(InternalIoApi::class)
+
 package com.fleeksoft.ksoup.ported
 
-import com.fleeksoft.ksoup.Platform
-import com.fleeksoft.ksoup.PlatformType
-import com.fleeksoft.ksoup.TestHelper
-import com.fleeksoft.ksoup.isApple
+import com.fleeksoft.ksoup.*
 import io.ktor.utils.io.charsets.*
 import io.ktor.utils.io.core.*
-import okio.IOException
+import kotlinx.io.*
+import kotlinx.io.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class BufferReaderTest {
+
+    @Test
+    fun testBufferPeek() {
+        val inputData = "ä<a>ä</a>"
+        val buffer = BufferReader(inputData)
+        assertEquals(inputData, buffer.peek().readString())
+        assertEquals(inputData, buffer.readString())
+        assertEquals("", buffer.readString())
+    }
+
     @Test
     fun testMixCharReader() {
         if (Platform.current != PlatformType.JVM && !TestHelper.forceAllTestsRun) {
@@ -68,8 +78,14 @@ class BufferReaderTest {
 
     @Test
     fun testSpecialCharsBufferReader() {
-        if (Platform.current == PlatformType.JS || Platform.isApple()) {
+        if (Platform.isJS() || Platform.isApple()) {
             // FIXME: euc-kr charset not supported
+            return
+        }
+
+
+        if (Platform.isWindows()) {
+            // FIXME: euc-kr charset decoder deadlock issue
             return
         }
 
@@ -82,7 +98,7 @@ class BufferReaderTest {
         assertEquals(
             specialText3,
             BufferReader(
-                byteArray = specialText3.toByteArray(Charset.forName("euc-kr")),
+                byteArray = specialText3.toByteArray(Charsets.forName("euc-kr")),
                 charset = "euc-kr",
             ).readString(specialText3.length.toLong()),
         )
@@ -91,7 +107,7 @@ class BufferReaderTest {
         assertEquals(
             specialText2,
             BufferReader(
-                byteArray = specialText2.toByteArray(Charset.forName("iso-8859-1")),
+                byteArray = specialText2.toByteArray(Charsets.forName("iso-8859-1")),
                 charset = "iso-8859-1",
             ).readString(specialText2.length.toLong()),
         )
@@ -100,7 +116,7 @@ class BufferReaderTest {
         assertEquals(
             specialText2.length,
             BufferReader(
-                byteArray = specialText2.toByteArray(Charset.forName("iso-8859-1")),
+                byteArray = specialText2.toByteArray(Charsets.forName("iso-8859-1")),
                 charset = "iso-8859-1",
             ).readCharArray(charArray, 0, specialText2.length),
         )
@@ -110,7 +126,7 @@ class BufferReaderTest {
         assertEquals(
             specialText3.length,
             BufferReader(
-                byteArray = specialText3.toByteArray(Charset.forName("euc-kr")),
+                byteArray = specialText3.toByteArray(Charsets.forName("euc-kr")),
                 charset = "euc-kr",
             ).readCharArray(charArray2, 0, specialText3.length),
         )

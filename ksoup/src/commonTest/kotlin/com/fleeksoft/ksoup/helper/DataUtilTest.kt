@@ -7,7 +7,7 @@ import com.fleeksoft.ksoup.ported.BufferReader
 import com.fleeksoft.ksoup.ported.toBuffer
 import io.ktor.utils.io.charsets.*
 import io.ktor.utils.io.core.*
-import okio.Path.Companion.toPath
+import kotlinx.io.files.Path
 import kotlin.test.*
 
 class DataUtilTest {
@@ -44,7 +44,7 @@ class DataUtilTest {
         data: String,
         charset: String,
     ): BufferReader {
-        return BufferReader(data.toByteArray(Charset.forName(charset)))
+        return BufferReader(data.toByteArray(Charsets.forName(charset)))
     }
 
     @Test
@@ -132,7 +132,7 @@ class DataUtilTest {
     @Test
     @Throws(Exception::class)
     fun secondMetaElementWithContentTypeContainsCharsetParameter() {
-        if (Platform.current == PlatformType.JS || Platform.isApple() || Platform.isWindows()) {
+        if (Platform.isJS() || Platform.isApple() || Platform.isWindows()) {
             // FIXME: euc-kr charset not supported
             return
         }
@@ -175,7 +175,7 @@ class DataUtilTest {
 
     @Test
     fun supportsBOMinFiles() {
-        if (Platform.current == PlatformType.JS || Platform.isWindows() || Platform.isApple()) {
+        if (Platform.isJS() || Platform.isWindows() || Platform.isApple()) {
             // FIXME: utf-16 charset not supported
             // FIXME: failing for iosX64˚
             return
@@ -251,7 +251,7 @@ class DataUtilTest {
                         "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">" +
                         "<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">Hellö Wörld!</html>"
                 ).toByteArray(
-                    Charset.forName(encoding),
+                    Charsets.forName(encoding),
                 ),
             )
         val doc: Document = Ksoup.parse(soup, baseUri = "", charsetName = null)
@@ -303,7 +303,7 @@ class DataUtilTest {
             return
         }
         val inputFile: String = TestHelper.getResourceAbsolutePath("htmltests/large.html.gz")
-        val input: String = TestHelper.getFileAsString(inputFile.toPath())
+        val input: String = TestHelper.getFileAsString(Path(inputFile))
 //        val stream = VaryingBufferReader(BufferReader(input))
         val expected = Ksoup.parse(input, "https://example.com")
         val doc: Document = Ksoup.parse(BufferReader(input), baseUri = "https://example.com", charsetName = null)
@@ -319,7 +319,7 @@ class DataUtilTest {
             return
         }
         val inputFile: String = TestHelper.getResourceAbsolutePath("htmltests/large.html.gz")
-        val input: String = TestHelper.getFileAsString(inputFile.toPath())
+        val input: String = TestHelper.getFileAsString(Path(inputFile))
         val byteBuffer: ByteArray = DataUtil.readToByteBuffer(BufferReader(input.toBuffer()), 0)
         val read = byteBuffer.decodeToString()
         assertEquals(input, read)

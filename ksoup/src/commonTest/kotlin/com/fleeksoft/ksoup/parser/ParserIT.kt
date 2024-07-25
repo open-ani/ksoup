@@ -1,9 +1,6 @@
 package com.fleeksoft.ksoup.parser
 
-import com.fleeksoft.ksoup.BuildConfig
-import com.fleeksoft.ksoup.Platform
-import com.fleeksoft.ksoup.PlatformType
-import com.fleeksoft.ksoup.isWindows
+import com.fleeksoft.ksoup.*
 import com.fleeksoft.ksoup.ported.System
 import kotlin.test.Ignore
 import kotlin.test.Test
@@ -14,24 +11,10 @@ import kotlin.test.assertTrue
  * Longer running Parser tests.
  */
 class ParserIT {
-    @Test
-    @Ignore // disabled by default now, as there more specific unconsume tests
-    fun testIssue1251() {
-        // https://github.com/jhy/Ksoup/issues/1251
-        val str = StringBuilder("<a href=\"\"ca")
-        for (countSpaces in 0..99999) {
-            try {
-                Parser.htmlParser().setTrackErrors(1).parseInput(str.toString(), "")
-            } catch (e: Exception) {
-                throw AssertionError("failed at length " + str.length, e)
-            }
-            str.insert(countSpaces, ' ')
-        }
-    }
 
     @Test
     fun handlesDeepStack() {
-        if ((Platform.current == PlatformType.JS || Platform.isWindows()) && BuildConfig.isGithubActions) {
+        if ((Platform.isJS() || Platform.isWindows()) && BuildConfig.isGithubActions) {
 //            The GitHub action is taking too much time.
             return
         }

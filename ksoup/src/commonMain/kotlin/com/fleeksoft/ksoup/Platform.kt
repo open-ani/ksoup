@@ -1,15 +1,18 @@
 package com.fleeksoft.ksoup
 
-import okio.BufferedSource
-import okio.Path
+import kotlinx.io.RawSource
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
 
-internal expect fun readGzipFile(file: Path): BufferedSource
+internal expect fun readGzipFile(file: Path): RawSource
 
-internal expect fun readFile(file: Path): BufferedSource
+internal fun readFile(file: Path): RawSource {
+    return SystemFileSystem.source(file)
+}
 
 // js don't support ?i
 internal fun jsSupportedRegex(regex: String): Regex {
-    return if (Platform.current == PlatformType.JS && regex.contains("(?i)")) {
+    return if (Platform.isJS() && regex.contains("(?i)")) {
         Regex(regex.replace("(?i)", ""), RegexOption.IGNORE_CASE)
     } else {
         Regex(regex)
@@ -22,6 +25,7 @@ public enum class PlatformType {
     IOS,
     LINUX,
     JS,
+    WASM,
     MAC,
     WINDOWS,
 }
@@ -37,3 +41,5 @@ public fun Platform.isWindows(): Boolean = this.current == PlatformType.WINDOWS
 public fun Platform.isJvmOrAndroid(): Boolean = this.current == PlatformType.JVM || this.current == PlatformType.ANDROID
 
 public fun Platform.isJvm(): Boolean = this.current == PlatformType.JVM
+
+public fun Platform.isJS(): Boolean = this.current == PlatformType.JS
