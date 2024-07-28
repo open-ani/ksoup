@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
@@ -19,6 +21,7 @@ kotlin {
         nodejs()
     }
 
+    @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         nodejs()
     }
@@ -30,6 +33,7 @@ kotlin {
 
     androidTarget {
         compilations.all {
+            @Suppress("DEPRECATION")
             kotlinOptions {
                 jvmTarget = "11"
             }
@@ -84,15 +88,9 @@ kotlin {
         appleMain.dependencies {
         }
 
-        jsMain.dependencies {
-        }
-
         val jvmAndroidCommonMain by creating {
             dependsOn(commonMain.get())
             kotlin.srcDir("src/jvmAndroidCommonMain/kotlin")
-        }
-
-        jsTest {
         }
 
         // Make JVM and Android source sets depend on the new shared source set
