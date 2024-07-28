@@ -152,19 +152,20 @@ mavenPublishing {
     }
 }
 
-val isGithubActions: Boolean = System.getenv("GITHUB_ACTIONS")?.toBoolean() == true
 val generateBuildConfigFile: Task by tasks.creating {
     group = "build setup"
     val file = layout.buildDirectory.file("$rootPath/BuildConfig.kt")
     outputs.file(file)
 
+    val isGithubActions: Boolean = System.getenv("GITHUB_ACTIONS")?.toBoolean() == true
+    val dir = rootProject.rootDir
     doLast {
         val content =
             """
             package com.fleeksoft.ksoup
 
             object BuildConfig {
-                const val PROJECT_ROOT: String = "${rootProject.rootDir.absolutePath.replace("\\", "\\\\")}"
+                const val PROJECT_ROOT: String = "${dir.absolutePath.replace("\\", "\\\\")}"
                 const val isGithubActions: Boolean = $isGithubActions
             }
             """.trimIndent()
